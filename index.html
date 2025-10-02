@@ -2,159 +2,248 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Game Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Games Hub</title>
   <style>
+    /* General Reset */
     body {
       font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      text-align: center;
       margin: 0;
       padding: 0;
-    }
-    h1 {
-      margin-top: 30px;
-      font-size: 2.5rem;
-    }
-    .games {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      padding: 40px;
-      max-width: 1000px;
-      margin: auto;
-    }
-    .game-card {
-      background: #222;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-      cursor: pointer;
-    }
-    .game-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-    }
-    .game-card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      display: block;
-    }
-    .game-card .title {
-      padding: 10px;
-      font-size: 1rem;
-      font-weight: bold;
-      color: #0ff;
-    }
-    .game-card:hover .title {
-      text-decoration: underline;
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
     }
 
-    /* Modal Styles */
+    :root {
+      --bg-color: #f9f9f9;
+      --text-color: #222;
+      --card-bg: #fff;
+      --card-hover: #eaeaea;
+    }
+
+    .dark-mode {
+      --bg-color: #121212;
+      --text-color: #f9f9f9;
+      --card-bg: #1e1e1e;
+      --card-hover: #333;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: var(--card-bg);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Logo Styling */
+    #homeLogo {
+      height: 50px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    #homeLogo:hover {
+      transform: scale(1.05);
+    }
+
+    /* Dark/Light Toggle */
+    .toggle-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      background: var(--text-color);
+      color: var(--bg-color);
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .toggle-btn:hover {
+      opacity: 0.8;
+    }
+
+    /* Search Bar */
+    .search-container {
+      text-align: center;
+      margin: 20px;
+    }
+
+    #searchInput {
+      width: 60%;
+      max-width: 400px;
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    /* Game Grid */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .game-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .game-card img {
+      width: 100%;
+      max-width: 180px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      transition: transform 0.3s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-6px) rotate(1deg);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+
+    .game-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .game-card h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    /* Modal for Open Options */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
     }
+
     .modal-content {
-      background: #222;
+      background: var(--card-bg);
       padding: 20px;
       border-radius: 12px;
       text-align: center;
-      width: 300px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
-    .modal-content h2 {
-      margin-bottom: 20px;
-    }
-    .modal-buttons button {
+
+    .modal-content button {
       margin: 10px;
-      padding: 10px 20px;
+      padding: 10px 16px;
+      font-size: 14px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
+      transition: 0.3s;
     }
-    .btn-current {
-      background: #0ff;
-      color: #111;
-    }
-    .btn-newtab {
-      background: #ff0;
-      color: #111;
-    }
-    .close {
-      cursor: pointer;
-      float: right;
-      font-size: 20px;
-      margin-top: -10px;
-      margin-right: -10px;
+
+    .modal-content button:hover {
+      opacity: 0.8;
     }
   </style>
 </head>
 <body>
-  <h1>🎮 GeneralMonkxyGames</h1>
-  <div class="games" id="games"></div>
+  <!-- Header with Logo + Toggle -->
+  <header>
+    <img src="gameshublogo.png" alt="Games Hub Logo" id="homeLogo">
+    <button class="toggle-btn" id="themeToggle">🌙 Dark</button>
+  </header>
+
+  <!-- Search Bar -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="🔎 Search games...">
+  </div>
+
+  <!-- Game Grid -->
+  <div class="game-grid" id="gameGrid">
+    <div class="game-card" data-name="3D Soccer" data-url="https://generalmonkxy.github.io/3D-Soccer">
+      <img src="3D-Soccer/game-image.png" alt="3D Soccer">
+      <h3>3D Soccer</h3>
+    </div>
+
+    <div class="game-card" data-name="Arcade Hoops" data-url="https://generalmonkxy.github.io/arcadehoops">
+      <img src="arcadehoops/game-image.png" alt="Arcade Hoops">
+      <h3>Arcade Hoops</h3>
+    </div>
+  </div>
 
   <!-- Modal -->
-  <div class="modal" id="gameModal">
+  <div class="modal" id="openModal">
     <div class="modal-content">
-      <span class="close" id="closeModal">&times;</span>
-      <h2 id="modalTitle">Open Game</h2>
-      <div class="modal-buttons">
-        <button class="btn-current" id="openCurrent">Open in Current Tab</button>
-        <button class="btn-newtab" id="openNewTab">Open in New Tab</button>
-      </div>
+      <h2>Open Game</h2>
+      <button id="openCurrent">Open Here</button>
+      <button id="openNew">Open in New Tab</button>
+      <button id="closeModal">Cancel</button>
     </div>
   </div>
 
   <script>
-    let selectedUrl = "";
+    // Dark/Light Mode Toggle
+    const toggleBtn = document.getElementById("themeToggle");
+    toggleBtn.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      toggleBtn.textContent = 
+        document.body.classList.contains("dark-mode") ? "☀️ Light" : "🌙 Dark";
+    });
 
-    // Load games from JSON
-    fetch("games.json")
-      .then(response => response.json())
-      .then(games => {
-        const container = document.getElementById("games");
-        games.forEach(game => {
-          const card = document.createElement("div");
-          card.className = "game-card";
-          card.innerHTML = `
-            <img src="${game.image}" alt="${game.title}">
-            <div class="title">${game.title}</div>
-          `;
-          card.addEventListener("click", () => {
-            selectedUrl = game.url;
-            document.getElementById("modalTitle").textContent = game.title;
-            document.getElementById("gameModal").style.display = "flex";
-          });
-          container.appendChild(card);
-        });
+    // Search Filter
+    const searchInput = document.getElementById("searchInput");
+    const gameCards = document.querySelectorAll(".game-card");
+
+    searchInput.addEventListener("input", () => {
+      const filter = searchInput.value.toLowerCase();
+      gameCards.forEach(card => {
+        const name = card.getAttribute("data-name").toLowerCase();
+        card.style.display = name.includes(filter) ? "block" : "none";
       });
+    });
 
-    // Modal controls
-    document.getElementById("closeModal").onclick = () => {
-      document.getElementById("gameModal").style.display = "none";
-    };
-    document.getElementById("openCurrent").onclick = () => {
-      window.location.href = selectedUrl;
-    };
-    document.getElementById("openNewTab").onclick = () => {
-      window.open(selectedUrl, "_blank");
-    };
-    window.onclick = (event) => {
-      if (event.target.id === "gameModal") {
-        document.getElementById("gameModal").style.display = "none";
+    // Modal Handling
+    const modal = document.getElementById("openModal");
+    let currentUrl = "";
+
+    document.querySelectorAll(".game-card").forEach(card => {
+      card.addEventListener("click", () => {
+        currentUrl = card.getAttribute("data-url");
+        modal.style.display = "flex";
+      });
+    });
+
+    document.getElementById("openCurrent").addEventListener("click", () => {
+      window.location.href = currentUrl;
+    });
+
+    document.getElementById("openNew").addEventListener("click", () => {
+      window.open(currentUrl, "_blank");
+    });
+
+    document.getElementById("closeModal").addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+
+    // Close modal if click outside
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.style.display = "none";
       }
-    };
+    });
+
+    // Logo click returns to hub
+    document.getElementById("homeLogo").addEventListener("click", () => {
+      window.location.href = "index.html"; // always returns to hub home
+    });
   </script>
 </body>
 </html>
-
-
