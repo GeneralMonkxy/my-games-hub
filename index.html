@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Games Hub</title>
   <style>
-    /* General Reset */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -14,22 +13,18 @@
       color: var(--text-color);
       transition: background 0.3s, color 0.3s;
     }
-
-    /* Default to DARK MODE */
     :root {
       --bg-color: #121212;
       --text-color: #f9f9f9;
       --card-bg: #1e1e1e;
       --card-hover: #333;
     }
-
     .light-mode {
       --bg-color: #f9f9f9;
       --text-color: #222;
       --card-bg: #fff;
       --card-hover: #eaeaea;
     }
-
     header {
       display: flex;
       align-items: center;
@@ -38,19 +33,14 @@
       background: var(--card-bg);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
-
-    /* Logo Styling */
     #homeLogo {
       height: 50px;
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-
     #homeLogo:hover {
       transform: scale(1.05);
     }
-
-    /* Dark/Light Toggle */
     .toggle-btn {
       padding: 6px 12px;
       border: none;
@@ -61,17 +51,11 @@
       font-size: 14px;
       transition: 0.3s;
     }
-
-    .toggle-btn:hover {
-      opacity: 0.8;
-    }
-
-    /* Search Bar */
+    .toggle-btn:hover { opacity: 0.8; }
     .search-container {
       text-align: center;
       margin: 20px;
     }
-
     #searchInput {
       width: 60%;
       max-width: 400px;
@@ -80,15 +64,12 @@
       border-radius: 8px;
       border: 1px solid #ccc;
     }
-
-    /* Game Grid */
     .game-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
       padding: 20px;
     }
-
     .game-card {
       background: var(--card-bg);
       border-radius: 12px;
@@ -98,7 +79,6 @@
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-
     .game-card img {
       width: 100%;
       max-width: 180px;
@@ -106,22 +86,12 @@
       margin-bottom: 10px;
       transition: transform 0.3s;
     }
-
     .game-card:hover {
       transform: translateY(-6px) rotate(1deg);
       box-shadow: 0 6px 16px rgba(0,0,0,0.2);
     }
-
-    .game-card:hover img {
-      transform: scale(1.05);
-    }
-
-    .game-card h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    /* Modal for Open Options */
+    .game-card:hover img { transform: scale(1.05); }
+    .game-card h3 { margin: 0; font-size: 16px; }
     .modal {
       display: none;
       position: fixed;
@@ -131,7 +101,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .modal-content {
       background: var(--card-bg);
       padding: 20px;
@@ -139,7 +108,6 @@
       text-align: center;
       box-shadow: 0 6px 20px rgba(0,0,0,0.3);
     }
-
     .modal-content button {
       margin: 10px;
       padding: 10px 16px;
@@ -149,28 +117,21 @@
       cursor: pointer;
       transition: 0.3s;
     }
-
-    .modal-content button:hover {
-      opacity: 0.8;
-    }
+    .modal-content button:hover { opacity: 0.8; }
   </style>
 </head>
 <body>
-  <!-- Header with Logo + Toggle -->
   <header>
     <img src="gameshublogo.png" alt="Games Hub Logo" id="homeLogo">
     <button class="toggle-btn" id="themeToggle">☀️ Light</button>
   </header>
 
-  <!-- Search Bar -->
   <div class="search-container">
     <input type="text" id="searchInput" placeholder="🔎 Search games...">
   </div>
 
-  <!-- Game Grid (filled by JS) -->
   <div class="game-grid" id="gameGrid"></div>
 
-  <!-- Modal -->
   <div class="modal" id="openModal">
     <div class="modal-content">
       <h2>Open Game</h2>
@@ -185,35 +146,39 @@
     const toggleBtn = document.getElementById("themeToggle");
     toggleBtn.addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
-      toggleBtn.textContent = 
+      toggleBtn.textContent =
         document.body.classList.contains("light-mode") ? "🌙 Dark" : "☀️ Light";
     });
 
     // Load Games from JSON
     const gameGrid = document.getElementById("gameGrid");
     let currentUrl = "";
+    const modal = document.getElementById("openModal");
 
     fetch("games.json")
       .then(response => response.json())
       .then(games => {
+        console.log("Games JSON loaded:", games);
         games.forEach(game => {
+          // Use lowercase or capitalized keys
+          const name = game.name || game.Name || "Unknown Game";
+          const url = game.url || game.URL || "#";
+          const image = game.image || game.Image || "placeholder.png";
+
           const card = document.createElement("div");
           card.className = "game-card";
-          card.setAttribute("data-name", game.name);
-          card.setAttribute("data-url", game.url);
-          card.innerHTML = `
-            <img src="${game.image}" alt="${game.name}">
-            <h3>${game.name}</h3>
-          `;
+          card.setAttribute("data-name", name);
+          card.setAttribute("data-url", url);
+          card.innerHTML = `<img src="${image}" alt="${name}"><h3>${name}</h3>`;
           gameGrid.appendChild(card);
 
-          // Add click listener for modal
           card.addEventListener("click", () => {
-            currentUrl = game.url;
+            currentUrl = url;
             modal.style.display = "flex";
           });
         });
-      });
+      })
+      .catch(err => console.error("Error loading games.json:", err));
 
     // Search Filter
     const searchInput = document.getElementById("searchInput");
@@ -226,30 +191,22 @@
     });
 
     // Modal Handling
-    const modal = document.getElementById("openModal");
-
     document.getElementById("openCurrent").addEventListener("click", () => {
       window.location.href = currentUrl;
     });
-
     document.getElementById("openNew").addEventListener("click", () => {
       window.open(currentUrl, "_blank");
     });
-
     document.getElementById("closeModal").addEventListener("click", () => {
       modal.style.display = "none";
     });
-
-    // Close modal if click outside
     window.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        modal.style.display = "none";
-      }
+      if (e.target === modal) modal.style.display = "none";
     });
 
     // Logo click returns to hub
     document.getElementById("homeLogo").addEventListener("click", () => {
-      window.location.href = "index.html"; // always returns to hub home
+      window.location.href = "index.html";
     });
   </script>
 </body>
