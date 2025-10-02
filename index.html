@@ -1,209 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Games Hub</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--bg-color);
-      color: var(--text-color);
-      transition: background 0.3s, color 0.3s;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Games Hub</title>
+<style>
+  /* General Reset & Body */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s;
+  }
+  :root {
+    --bg-color: #121212;
+    --text-color: #f9f9f9;
+    --card-bg: #1e1e1e;
+    --card-hover: #333;
+    --modal-bg: #1e1e1e;
+    --button-bg: #333;
+    --button-hover: #555;
+  }
+  .light-mode {
+    --bg-color: #f9f9f9;
+    --text-color: #222;
+    --card-bg: #fff;
+    --card-hover: #eaeaea;
+    --modal-bg: #fff;
+    --button-bg: #e0e0e0;
+    --button-hover: #ccc;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--card-bg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #homeLogo {
+    height: 50px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  #homeLogo:hover { transform: scale(1.05); }
+  .toggle-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--text-color);
+    color: var(--bg-color);
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+  }
+  .toggle-btn:hover { opacity: 0.8; }
+
+  /* Search */
+  .search-container {
+    text-align: center;
+    margin: 20px;
+  }
+  #searchInput {
+    width: 60%;
+    max-width: 400px;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  /* Game Grid */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+  .game-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeSlideUp 0.5s forwards;
+  }
+  .game-card img {
+    width: 100%;
+    max-width: 180px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: transform 0.3s;
+  }
+  .game-card:hover {
+    transform: translateY(-6px) rotate(1deg);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+  .game-card:hover img { transform: scale(1.05); }
+  .game-card h3 { margin: 0; font-size: 16px; }
+
+  @keyframes fadeSlideUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
-    :root {
-      --bg-color: #121212;
-      --text-color: #f9f9f9;
-      --card-bg: #1e1e1e;
-      --card-hover: #333;
-    }
-    .light-mode {
-      --bg-color: #f9f9f9;
-      --text-color: #222;
-      --card-bg: #fff;
-      --card-hover: #eaeaea;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      background: var(--card-bg);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    }
-    #homeLogo {
-      height: 50px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    #homeLogo:hover {
-      transform: scale(1.05);
-    }
-    .toggle-btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 8px;
-      background: var(--text-color);
-      color: var(--bg-color);
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-    .toggle-btn:hover { opacity: 0.8; }
-    .search-container {
-      text-align: center;
-      margin: 20px;
-    }
-    #searchInput {
-      width: 60%;
-      max-width: 400px;
-      padding: 8px 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .game-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-    .game-card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 10px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .game-card img {
-      width: 100%;
-      max-width: 180px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      transition: transform 0.3s;
-    }
-    .game-card:hover {
-      transform: translateY(-6px) rotate(1deg);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-    }
-    .game-card:hover img { transform: scale(1.05); }
-    .game-card h3 { margin: 0; font-size: 16px; }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: var(--card-bg);
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    }
-    .modal-content button {
-      margin: 10px;
-      padding: 10px 16px;
-      font-size: 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .modal-content button:hover { opacity: 0.8; }
-  </style>
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .modal-content {
+    background: var(--modal-bg);
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from {opacity:0; transform: scale(0.8);}
+    to {opacity:1; transform: scale(1);}
+  }
+  .modal-content img {
+    width: 100%;
+    max-width: 250px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+  .modal-content h2 {
+    margin: 0 0 15px;
+    font-size: 20px;
+  }
+  .modal-content button {
+    display: inline-block;
+    margin: 8px;
+    padding: 10px 20px;
+    font-size: 15px;
+    border: none;
+    border-radius: 10px;
+    background: var(--button-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .modal-content button:hover {
+    background: var(--button-hover);
+    transform: scale(1.05);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .modal-content img { max-width: 100%; height: auto; }
+    .modal-content button { width: 100%; margin: 6px 0; }
+    #searchInput { width: 90%; }
+  }
+</style>
 </head>
 <body>
-  <header>
-    <img src="gameshublogo.png" alt="Games Hub Logo" id="homeLogo">
-    <button class="toggle-btn" id="themeToggle">☀️ Light</button>
-  </header>
 
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="🔎 Search games...">
+<header>
+  <img src="gameshublogo.png" alt="Games Hub Logo" id="homeLogo">
+  <button class="toggle-btn" id="themeToggle">☀️ Light</button>
+</header>
+
+<div class="search-container">
+  <input type="text" id="searchInput" placeholder="🔎 Search games...">
+</div>
+
+<div class="game-grid" id="gameGrid"></div>
+
+<div class="modal" id="openModal">
+  <div class="modal-content">
+    <img id="modalImage" src="" alt="Game Preview">
+    <h2 id="modalTitle">Game Title</h2>
+    <button id="openCurrent">Open Here</button>
+    <button id="openNew">Open in New Tab</button>
+    <button id="closeModal">Cancel</button>
   </div>
+</div>
 
-  <div class="game-grid" id="gameGrid"></div>
+<script>
+const toggleBtn = document.getElementById("themeToggle");
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("light-mode");
+  toggleBtn.textContent = document.body.classList.contains("light-mode") ? "🌙 Dark" : "☀️ Light";
+});
 
-  <div class="modal" id="openModal">
-    <div class="modal-content">
-      <h2>Open Game</h2>
-      <button id="openCurrent">Open Here</button>
-      <button id="openNew">Open in New Tab</button>
-      <button id="closeModal">Cancel</button>
-    </div>
-  </div>
+const gameGrid = document.getElementById("gameGrid");
+let currentUrl = "";
+const modal = document.getElementById("openModal");
+const modalImage = document.getElementById("modalImage");
+const modalTitle = document.getElementById("modalTitle");
 
-  <script>
-    const toggleBtn = document.getElementById("themeToggle");
-    toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("light-mode");
-      toggleBtn.textContent =
-        document.body.classList.contains("light-mode") ? "🌙 Dark" : "☀️ Light";
-    });
+// Load games.json
+fetch("https://generalmonkxy.github.io/my-games-hub/games.json")
+  .then(res => res.json())
+  .then(games => {
+    games.forEach((game, index) => {
+      const card = document.createElement("div");
+      card.className = "game-card";
+      card.setAttribute("data-name", game.name);
+      card.setAttribute("data-url", game.url);
+      card.setAttribute("data-image", game.image);
+      card.innerHTML = `<img src="${game.image}" alt="${game.name}"><h3>${game.name}</h3>`;
+      card.style.animationDelay = `${index * 0.1}s`; // stagger animation
+      gameGrid.appendChild(card);
 
-    const gameGrid = document.getElementById("gameGrid");
-    let currentUrl = "";
-    const modal = document.getElementById("openModal");
-
-    // Fetch using absolute GitHub Pages URL
-    fetch("https://generalmonkxy.github.io/my-games-hub/games.json")
-      .then(response => response.json())
-      .then(games => {
-        console.log("Games JSON loaded:", games);
-        games.forEach(game => {
-          const name = game.name;
-          const url = game.url;
-          const image = game.image;
-
-          const card = document.createElement("div");
-          card.className = "game-card";
-          card.setAttribute("data-name", name);
-          card.setAttribute("data-url", url);
-          card.innerHTML = `<img src="${image}" alt="${name}"><h3>${name}</h3>`;
-          gameGrid.appendChild(card);
-
-          card.addEventListener("click", () => {
-            currentUrl = url;
-            modal.style.display = "flex";
-          });
-        });
-      })
-      .catch(err => console.error("Error loading games.json:", err));
-
-    const searchInput = document.getElementById("searchInput");
-    searchInput.addEventListener("input", () => {
-      const filter = searchInput.value.toLowerCase();
-      document.querySelectorAll(".game-card").forEach(card => {
-        const name = card.getAttribute("data-name").toLowerCase();
-        card.style.display = name.includes(filter) ? "block" : "none";
+      card.addEventListener("click", () => {
+        currentUrl = game.url;
+        modalImage.src = game.image;
+        modalTitle.textContent = game.name;
+        modal.style.display = "flex";
       });
     });
+  })
+  .catch(err => console.error("Error loading games.json:", err));
 
-    document.getElementById("openCurrent").addEventListener("click", () => {
-      window.location.href = currentUrl;
-    });
-    document.getElementById("openNew").addEventListener("click", () => {
-      window.open(currentUrl, "_blank");
-    });
-    document.getElementById("closeModal").addEventListener("click", () => {
-      modal.style.display = "none";
-    });
-    window.addEventListener("click", (e) => {
-      if (e.target === modal) modal.style.display = "none";
-    });
+// Search
+document.getElementById("searchInput").addEventListener("input", e => {
+  const filter = e.target.value.toLowerCase();
+  document.querySelectorAll(".game-card").forEach(card => {
+    const name = card.getAttribute("data-name").toLowerCase();
+    card.style.display = name.includes(filter) ? "block" : "none";
+  });
+});
 
-    document.getElementById("homeLogo").addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
-  </script>
+// Modal buttons
+document.getElementById("openCurrent").addEventListener("click", () => { window.location.href = currentUrl; });
+document.getElementById("openNew").addEventListener("click", () => { window.open(currentUrl, "_blank"); });
+document.getElementById("closeModal").addEventListener("click", () => { modal.style.display = "none"; });
+
+// Click outside modal to close
+window.addEventListener("click", e => { if(e.target === modal) modal.style.display = "none"; });
+
+// Logo click returns home
+document.getElementById("homeLogo").addEventListener("click", () => { window.location.href = "index.html"; });
+</script>
+
 </body>
 </html>
 
