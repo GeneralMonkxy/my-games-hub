@@ -15,18 +15,19 @@
       transition: background 0.3s, color 0.3s;
     }
 
+    /* Default to DARK MODE */
     :root {
-      --bg-color: #f9f9f9;
-      --text-color: #222;
-      --card-bg: #fff;
-      --card-hover: #eaeaea;
-    }
-
-    .dark-mode {
       --bg-color: #121212;
       --text-color: #f9f9f9;
       --card-bg: #1e1e1e;
       --card-hover: #333;
+    }
+
+    .light-mode {
+      --bg-color: #f9f9f9;
+      --text-color: #222;
+      --card-bg: #fff;
+      --card-hover: #eaeaea;
     }
 
     header {
@@ -158,7 +159,7 @@
   <!-- Header with Logo + Toggle -->
   <header>
     <img src="gameshublogo.png" alt="Games Hub Logo" id="homeLogo">
-    <button class="toggle-btn" id="themeToggle">🌙 Dark</button>
+    <button class="toggle-btn" id="themeToggle">☀️ Light</button>
   </header>
 
   <!-- Search Bar -->
@@ -166,18 +167,8 @@
     <input type="text" id="searchInput" placeholder="🔎 Search games...">
   </div>
 
-  <!-- Game Grid -->
-  <div class="game-grid" id="gameGrid">
-    <div class="game-card" data-name="3D Soccer" data-url="https://generalmonkxy.github.io/3D-Soccer">
-      <img src="3D-Soccer/game-image.png" alt="3D Soccer">
-      <h3>3D Soccer</h3>
-    </div>
-
-    <div class="game-card" data-name="Arcade Hoops" data-url="https://generalmonkxy.github.io/arcadehoops">
-      <img src="arcadehoops/game-image.png" alt="Arcade Hoops">
-      <h3>Arcade Hoops</h3>
-    </div>
-  </div>
+  <!-- Game Grid (filled by JS) -->
+  <div class="game-grid" id="gameGrid"></div>
 
   <!-- Modal -->
   <div class="modal" id="openModal">
@@ -193,18 +184,42 @@
     // Dark/Light Mode Toggle
     const toggleBtn = document.getElementById("themeToggle");
     toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
+      document.body.classList.toggle("light-mode");
       toggleBtn.textContent = 
-        document.body.classList.contains("dark-mode") ? "☀️ Light" : "🌙 Dark";
+        document.body.classList.contains("light-mode") ? "🌙 Dark" : "☀️ Light";
     });
+
+    // Load Games from JSON
+    const gameGrid = document.getElementById("gameGrid");
+    let currentUrl = "";
+
+    fetch("games.json")
+      .then(response => response.json())
+      .then(games => {
+        games.forEach(game => {
+          const card = document.createElement("div");
+          card.className = "game-card";
+          card.setAttribute("data-name", game.name);
+          card.setAttribute("data-url", game.url);
+          card.innerHTML = `
+            <img src="${game.image}" alt="${game.name}">
+            <h3>${game.name}</h3>
+          `;
+          gameGrid.appendChild(card);
+
+          // Add click listener for modal
+          card.addEventListener("click", () => {
+            currentUrl = game.url;
+            modal.style.display = "flex";
+          });
+        });
+      });
 
     // Search Filter
     const searchInput = document.getElementById("searchInput");
-    const gameCards = document.querySelectorAll(".game-card");
-
     searchInput.addEventListener("input", () => {
       const filter = searchInput.value.toLowerCase();
-      gameCards.forEach(card => {
+      document.querySelectorAll(".game-card").forEach(card => {
         const name = card.getAttribute("data-name").toLowerCase();
         card.style.display = name.includes(filter) ? "block" : "none";
       });
@@ -212,14 +227,6 @@
 
     // Modal Handling
     const modal = document.getElementById("openModal");
-    let currentUrl = "";
-
-    document.querySelectorAll(".game-card").forEach(card => {
-      card.addEventListener("click", () => {
-        currentUrl = card.getAttribute("data-url");
-        modal.style.display = "flex";
-      });
-    });
 
     document.getElementById("openCurrent").addEventListener("click", () => {
       window.location.href = currentUrl;
