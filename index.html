@@ -142,7 +142,6 @@
   </div>
 
   <script>
-    // Dark/Light Mode Toggle
     const toggleBtn = document.getElementById("themeToggle");
     toggleBtn.addEventListener("click", () => {
       document.body.classList.toggle("light-mode");
@@ -150,20 +149,19 @@
         document.body.classList.contains("light-mode") ? "🌙 Dark" : "☀️ Light";
     });
 
-    // Load Games from JSON
     const gameGrid = document.getElementById("gameGrid");
     let currentUrl = "";
     const modal = document.getElementById("openModal");
 
-    fetch("games.json")
+    // Fetch using absolute GitHub Pages URL
+    fetch("https://generalmonkxy.github.io/my-games-hub/games.json")
       .then(response => response.json())
       .then(games => {
         console.log("Games JSON loaded:", games);
         games.forEach(game => {
-          // Use lowercase or capitalized keys
-          const name = game.name || game.Name || "Unknown Game";
-          const url = game.url || game.URL || "#";
-          const image = game.image || game.Image || "placeholder.png";
+          const name = game.name;
+          const url = game.url;
+          const image = game.image;
 
           const card = document.createElement("div");
           card.className = "game-card";
@@ -180,7 +178,6 @@
       })
       .catch(err => console.error("Error loading games.json:", err));
 
-    // Search Filter
     const searchInput = document.getElementById("searchInput");
     searchInput.addEventListener("input", () => {
       const filter = searchInput.value.toLowerCase();
@@ -190,7 +187,6 @@
       });
     });
 
-    // Modal Handling
     document.getElementById("openCurrent").addEventListener("click", () => {
       window.location.href = currentUrl;
     });
@@ -204,10 +200,10 @@
       if (e.target === modal) modal.style.display = "none";
     });
 
-    // Logo click returns to hub
     document.getElementById("homeLogo").addEventListener("click", () => {
       window.location.href = "index.html";
     });
   </script>
 </body>
 </html>
+
