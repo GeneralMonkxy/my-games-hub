@@ -9,6 +9,8 @@
       background: #111;
       color: #fff;
       text-align: center;
+      margin: 0;
+      padding: 0;
     }
     h1 {
       margin-top: 30px;
@@ -16,48 +18,143 @@
     }
     .games {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 20px;
       padding: 40px;
+      max-width: 1000px;
+      margin: auto;
     }
     .game-card {
       background: #222;
-      border-radius: 15px;
-      padding: 20px;
+      border-radius: 12px;
+      overflow: hidden;
       box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-      transition: transform 0.2s ease-in-out;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      cursor: pointer;
     }
     .game-card:hover {
       transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
     }
     .game-card img {
       width: 100%;
-      border-radius: 10px;
-    }
-    .game-card a {
+      height: 120px;
+      object-fit: cover;
       display: block;
-      margin-top: 15px;
-      font-size: 1.2rem;
-      color: #0ff;
-      text-decoration: none;
     }
-    .game-card a:hover {
+    .game-card .title {
+      padding: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #0ff;
+    }
+    .game-card:hover .title {
       text-decoration: underline;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+    }
+    .modal-content h2 {
+      margin-bottom: 20px;
+    }
+    .modal-buttons button {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-current {
+      background: #0ff;
+      color: #111;
+    }
+    .btn-newtab {
+      background: #ff0;
+      color: #111;
+    }
+    .close {
+      cursor: pointer;
+      float: right;
+      font-size: 20px;
+      margin-top: -10px;
+      margin-right: -10px;
     }
   </style>
 </head>
 <body>
   <h1>🎮 My Games Hub</h1>
-  <div class="games">
-    <div class="game-card">
-      <img src="https://raw.githubusercontent.com/generalmonkxy/3D-Soccer/main/soccer-preview.png" alt="3D Soccer Preview">
-      <a href="https://generalmonkxy.github.io/3D-Soccer" target="_blank">⚽ Play 3D Soccer</a>
-    </div>
-    <div class="game-card">
-      <img src="https://raw.githubusercontent.com/generalmonkxy/arcadehoops/main/hoops-preview.png" alt="Arcade Hoops Preview">
-      <a href="https://generalmonkxy.github.io/arcadehoops" target="_blank">🏀 Play Arcade Hoops</a>
+  <div class="games" id="games"></div>
+
+  <!-- Modal -->
+  <div class="modal" id="gameModal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <h2 id="modalTitle">Open Game</h2>
+      <div class="modal-buttons">
+        <button class="btn-current" id="openCurrent">Open in Current Tab</button>
+        <button class="btn-newtab" id="openNewTab">Open in New Tab</button>
+      </div>
     </div>
   </div>
+
+  <script>
+    let selectedUrl = "";
+
+    // Load games from JSON
+    fetch("games.json")
+      .then(response => response.json())
+      .then(games => {
+        const container = document.getElementById("games");
+        games.forEach(game => {
+          const card = document.createElement("div");
+          card.className = "game-card";
+          card.innerHTML = `
+            <img src="${game.image}" alt="${game.title}">
+            <div class="title">${game.title}</div>
+          `;
+          card.addEventListener("click", () => {
+            selectedUrl = game.url;
+            document.getElementById("modalTitle").textContent = game.title;
+            document.getElementById("gameModal").style.display = "flex";
+          });
+          container.appendChild(card);
+        });
+      });
+
+    // Modal controls
+    document.getElementById("closeModal").onclick = () => {
+      document.getElementById("gameModal").style.display = "none";
+    };
+    document.getElementById("openCurrent").onclick = () => {
+      window.location.href = selectedUrl;
+    };
+    document.getElementById("openNewTab").onclick = () => {
+      window.open(selectedUrl, "_blank");
+    };
+    window.onclick = (event) => {
+      if (event.target.id === "gameModal") {
+        document.getElementById("gameModal").style.display = "none";
+      }
+    };
+  </script>
 </body>
 </html>
+
 
