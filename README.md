@@ -1,4 +1,3 @@
-# my-games-hub
 # My Games Hub - Documentation & Cheat Sheet
 
 Welcome to **My Games Hub**! This README contains instructions, tips, and notes for adding new games without touching the website HTML.
