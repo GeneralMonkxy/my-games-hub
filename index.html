@@ -110,10 +110,7 @@
   .game-card h3 { margin: 0; font-size: 16px; }
 
   @keyframes fadeSlideUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   /* Modal */
@@ -215,8 +212,8 @@ const modal = document.getElementById("openModal");
 const modalImage = document.getElementById("modalImage");
 const modalTitle = document.getElementById("modalTitle");
 
-// Load games.json
-fetch("https://generalmonkxy.github.io/my-games-hub/games.json")
+// Load games.json (relative path)
+fetch("games.json")
   .then(res => res.json())
   .then(games => {
     games.forEach((game, index) => {
@@ -226,7 +223,7 @@ fetch("https://generalmonkxy.github.io/my-games-hub/games.json")
       card.setAttribute("data-url", game.url);
       card.setAttribute("data-image", game.image);
       card.innerHTML = `<img src="${game.image}" alt="${game.name}"><h3>${game.name}</h3>`;
-      card.style.animationDelay = `${index * 0.1}s`; // stagger animation
+      card.style.animationDelay = `${index * 0.1}s`;
       gameGrid.appendChild(card);
 
       card.addEventListener("click", () => {
@@ -262,4 +259,5 @@ document.getElementById("homeLogo").addEventListener("click", () => { window.loc
 
 </body>
 </html>
+
 
