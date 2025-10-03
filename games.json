@@ -1,16 +1,16 @@
 [
   {
-    "name": "3D Soccer",
+    "name": "3D Soccer (Computer Only)",
     "url": "https://generalmonkxy.github.io/3D-Soccer",
     "image": "soccer-preview.png"
   },
   {
-    "name": "Arcade Hoops",
+    "name": "Arcade Hoops (Computer Only)",
     "url": "https://generalmonkxy.github.io/arcadehoops",
     "image": "hoops-preview.png"
   },
   {
-    "name": "Clicker Quest",
+    "name": "Clicker Quest (Mobile + Computer)",
     "url": "https://generalmonkxy.github.io/clickerquest",
     "image": "clickerquest.png"
   }
