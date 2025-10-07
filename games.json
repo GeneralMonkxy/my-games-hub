@@ -14,8 +14,9 @@
     "url": "https://generalmonkxy.github.io/clickerquest",
     "image": "clickerquest.png"
   },
+  {
     "name": "2D Shooter",
     "url": "https://generalmonkxy.github.io/2D-Shooter",
     "image": "2D-Shooter.png"
-  },
+  }
 ]
